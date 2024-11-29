@@ -1,12 +1,10 @@
 <script>
 import Banner from 'dashboard/components/ui/Banner.vue';
 import { mapGetters } from 'vuex';
-import accountMixin from 'dashboard/mixins/account';
 import { useAlert } from 'dashboard/composables';
 
 export default {
   components: { Banner },
-  mixins: [accountMixin],
   computed: {
     ...mapGetters({
       currentUser: 'getCurrentUser',
@@ -30,6 +28,7 @@ export default {
 };
 </script>
 
+<!-- eslint-disable-next-line vue/no-root-v-if -->
 <template>
   <Banner
     v-if="shouldShowBanner"
@@ -38,6 +37,6 @@ export default {
     :action-button-label="actionButtonMessage"
     action-button-icon="mail"
     has-action-button
-    @click="resendVerificationEmail"
+    @primary-action="resendVerificationEmail"
   />
 </template>

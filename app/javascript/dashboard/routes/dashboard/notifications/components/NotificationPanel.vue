@@ -1,15 +1,14 @@
 <script>
 import { mapGetters } from 'vuex';
-import rtlMixin from 'shared/mixins/rtlMixin';
 import NotificationPanelList from './NotificationPanelList.vue';
-
+import { useTrack } from 'dashboard/composables';
 import { ACCOUNT_EVENTS } from '../../../../helper/AnalyticsHelper/events';
 
 export default {
   components: {
     NotificationPanelList,
   },
-  mixins: [rtlMixin],
+  emits: ['close'],
   data() {
     return {
       pageSize: 15,
@@ -21,9 +20,6 @@ export default {
       records: 'notifications/getNotifications',
       uiFlags: 'notifications/getUIFlags',
     }),
-    notificationPanelFooterIconClass() {
-      return this.isRTLView ? '-mr-3' : '-ml-3';
-    },
     totalUnreadNotifications() {
       return this.meta.unreadCount;
     },
@@ -65,7 +61,7 @@ export default {
         notification_type: notificationType,
       } = notification;
 
-      this.$track(ACCOUNT_EVENTS.OPEN_CONVERSATION_VIA_NOTIFICATION, {
+      useTrack(ACCOUNT_EVENTS.OPEN_CONVERSATION_VIA_NOTIFICATION, {
         notificationType,
       });
       this.$store.dispatch('notifications/read', {
@@ -105,7 +101,7 @@ export default {
       }
     },
     onMarkAllDoneClick() {
-      this.$track(ACCOUNT_EVENTS.MARK_AS_READ_NOTIFICATIONS);
+      useTrack(ACCOUNT_EVENTS.MARK_AS_READ_NOTIFICATIONS);
       this.$store.dispatch('notifications/readAll');
     },
     openAudioNotificationSettings() {
@@ -201,7 +197,7 @@ export default {
             <fluent-icon
               icon="chevron-left"
               size="16"
-              :class="notificationPanelFooterIconClass"
+              class="rtl:-mr-3 ltr:-ml-3"
             />
           </woot-button>
           <woot-button
@@ -236,7 +232,7 @@ export default {
             <fluent-icon
               icon="chevron-right"
               size="16"
-              :class="notificationPanelFooterIconClass"
+              class="rtl:-mr-3 ltr:-ml-3"
             />
           </woot-button>
         </div>

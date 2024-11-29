@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { useAdmin } from 'dashboard/composables/useAdmin';
-import accountMixin from 'dashboard/mixins/account';
+import { useAccount } from 'dashboard/composables/useAccount';
 import OnboardingView from '../OnboardingView.vue';
 import EmptyStateMessage from './EmptyStateMessage.vue';
 
@@ -10,7 +10,6 @@ export default {
     OnboardingView,
     EmptyStateMessage,
   },
-  mixins: [accountMixin],
   props: {
     isOnExpandedLayout: {
       type: Boolean,
@@ -19,8 +18,12 @@ export default {
   },
   setup() {
     const { isAdmin } = useAdmin();
+
+    const { accountScopedUrl } = useAccount();
+
     return {
       isAdmin,
+      accountScopedUrl,
     };
   },
   computed: {
@@ -44,7 +47,7 @@ export default {
       return this.$t('CONVERSATION.404');
     },
     newInboxURL() {
-      return this.addAccountScoping('settings/inboxes/new');
+      return this.accountScopedUrl('settings/inboxes/new');
     },
     emptyClassName() {
       if (
@@ -53,7 +56,7 @@ export default {
         !this.loadingChatList &&
         this.isAdmin
       ) {
-        return 'h-full overflow-auto';
+        return 'h-full overflow-auto w-full';
       }
       return 'flex-1 min-w-0 px-0 flex flex-col items-center justify-center h-full';
     },
@@ -70,7 +73,7 @@ export default {
     <!-- No inboxes attached -->
     <div
       v-if="!inboxesList.length && !uiFlags.isFetching && !loadingChatList"
-      class="clearfix"
+      class="clearfix mx-auto"
     >
       <OnboardingView v-if="isAdmin" />
       <EmptyStateMessage v-else :message="$t('CONVERSATION.NO_INBOX_AGENT')" />
